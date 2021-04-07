@@ -8,9 +8,9 @@ class LineComponent extends JComponent {
 
     ArrayList<Line2D.Double> lines;
     ArrayList<Ellipse2D.Double> points;
-    MapGraph mapGraph;
+    ArrayList<Integer> mapGraph;
 
-    LineComponent(int width, int height, MapGraph mapGraph) {
+    LineComponent(int width, int height, ArrayList<Integer> mapGraph) {
         super();
         setPreferredSize(new Dimension(width, height));
         lines = new ArrayList<Line2D.Double>();
@@ -64,7 +64,7 @@ class LineComponent extends JComponent {
 
         for (int i = 0; i < points.size(); i++) {
             Ellipse2D.Double point = points.get(i);
-            switch (mapGraph.getNodeList().get(i).getColour()) {
+            switch (mapGraph.get(i)) {
                 case -1:
                     g2d.setPaint(Color.white);
                     break;

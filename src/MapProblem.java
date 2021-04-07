@@ -6,10 +6,16 @@ public class MapProblem extends CSP {
     private MapGraph mapGraph;
     private int numberOfColours;
     private int width, height;
+    private ArrayList<ArrayList<Integer>> solutions;
+
+    public ArrayList<ArrayList<Integer>> getSolutions() {
+        return solutions;
+    }
 
     public MapProblem(int numberOfColours) {
         this.mapGraph = new MapGraph();
         this.numberOfColours = numberOfColours;
+        solutions = new ArrayList<>();
     }
 
     public MapGraph getMapGraph() {
@@ -125,7 +131,7 @@ public class MapProblem extends CSP {
         backtracking(variables);
     }
 
-    public MapGraph backtracking(ArrayList<MapNode> variables) {
+    public boolean backtracking(ArrayList<MapNode> variables) {
         int nextVar = chooseNextVar(variables);
         if (nextVar != -1) {
             MapNode currentVar = variables.get(nextVar);
@@ -135,17 +141,21 @@ public class MapProblem extends CSP {
                 if (constraintsSatisfied(currentVar)) {
                     ArrayList<MapNode> newVariables = new ArrayList(List.copyOf(variables));
                     newVariables.remove(nextVar);
-                    backtracking(newVariables);
-                    saveSolution(new MapGraph(mapGraph));
+                    if (backtracking(newVariables)) {
+
+                    } else {
+                        saveSolution(mapGraph);
+                    }
+
                 }
                 currentVar.getColourDomain().remove(colour);
-                System.out.println(currentVar.getColourDomain());
+                currentVar.setColour(-1);
                 colour = chooseNextValue(currentVar.getColourDomain());
             }
-            currentVar.getColourDomain();
+            currentVar.generateDomain(this.numberOfColours);
+            return true;
         }
-
-        return this.mapGraph;
+        return false;
     }
 
     public int chooseNextValue(List<Integer> domain) {
@@ -183,8 +193,15 @@ public class MapProblem extends CSP {
 
     public void saveSolution(MapGraph solution) {
         System.out.println("Znaleziono rozwiązanie!!");
-        Visualization.visualizeMapProblem(this,  width + 1, height + 1);
+        this.solutions.add(generateSolution(solution));
+    }
 
+    public ArrayList<Integer> generateSolution(MapGraph graph) {
+        ArrayList<Integer> solution = new ArrayList();
+        for (MapNode node : graph.getNodeList()) {
+            solution.add(node.getColour());
+        }
+        return solution;
     }
 
 //    public boolean isConnectionValid(Connection c, List<Connection> allConnections) {

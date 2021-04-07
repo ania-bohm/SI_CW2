@@ -11,9 +11,7 @@ public class MapGraph extends Graph {
     public MapGraph() {
         nodeList = new ArrayList<>();
     }
-    public MapGraph(MapGraph mapGraph){
 
-    }
 
     public void calculateDistanceMatrix() {
         int nodeCount = nodeList.size();
