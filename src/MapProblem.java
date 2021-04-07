@@ -137,8 +137,8 @@ public class MapProblem extends CSP {
             MapNode currentVar = variables.get(nextVar);
             int colour = chooseNextValue(currentVar.getColourDomain());
             while (colour != -1) {
-                currentVar.setColour(currentVar.getColourDomain().get(colour));
-                if (constraintsSatisfied(currentVar)) {
+                if (constraintsSatisfied(currentVar,currentVar.getColourDomain().get(colour))) {
+                    currentVar.setColour(currentVar.getColourDomain().get(colour));
                     ArrayList<MapNode> newVariables = new ArrayList(List.copyOf(variables));
                     newVariables.remove(nextVar);
                     if (backtracking(newVariables)) {
@@ -170,9 +170,9 @@ public class MapProblem extends CSP {
         }
     }
 
-    public boolean constraintsSatisfied(MapNode currentNode) {
+    public boolean constraintsSatisfied(MapNode currentNode, int colour) {
         for (Node neighbour : currentNode.getNeighbourList()) {
-            if (((MapNode) neighbour).getColour() == currentNode.getColour()) {
+            if (((MapNode) neighbour).getColour() == colour) {
                 return false;
             }
         }
