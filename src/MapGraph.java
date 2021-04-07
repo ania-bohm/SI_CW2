@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,6 +10,9 @@ public class MapGraph extends Graph {
 
     public MapGraph() {
         nodeList = new ArrayList<>();
+    }
+    public MapGraph(MapGraph mapGraph){
+
     }
 
     public void calculateDistanceMatrix() {
@@ -47,6 +51,16 @@ public class MapGraph extends Graph {
         ArrayList<Integer> sortedList = new ArrayList(indexesListCopy);
         Collections.sort(sortedList, (left, right) -> (int) (distanceRow[indexesListCopy.indexOf(left)] - distanceRow[indexesListCopy.indexOf(right)]));
 
-        return sortedList.get(n+1);
+        return sortedList.get(n + 1);
+    }
+
+    public void displayGraph() {
+        for (int i = 0; i < nodeList.size(); i++) {
+            System.out.print("Node: " + nodeList.get(i).getPoint().toString() +", its neighbours: {");
+            for (int j = 0; j < nodeList.get(i).getNeighbourList().size(); j++) {
+                System.out.print(((MapNode) nodeList.get(i).getNeighbourList().get(j)).getPoint().toString() + " ");
+            }
+            System.out.print("}\n");
+        }
     }
 }

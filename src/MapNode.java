@@ -11,10 +11,11 @@ public class MapNode extends Node {
         this.point = point;
         this.colour = -1;
         this.colourDomain = new ArrayList<>();
+        generateDomain(numberOfColours);
         this.numberOfColours = numberOfColours;
     }
 
-    public Point getPoint(){
+    public Point getPoint() {
         return this.point;
     }
 
@@ -35,6 +36,14 @@ public class MapNode extends Node {
         for (int i = 0; i < colourDomain.size(); i++) {
             this.colourDomain.add(colourDomain.get(i));
         }
+    }
+
+    public void generateDomain(int numberOfColours) {
+        this.colourDomain.clear();
+        for (int i = 0; i < numberOfColours; i++) {
+            this.colourDomain.add(i);
+        }
+
     }
 
 }
