@@ -14,10 +14,9 @@ public class Main {
         while (read != 0) {
             MapProblem mapProblem = new MapProblem(3);
             mapProblem.initialiseGraph(width, height, 5);
-            mapProblem.solveProblem();
-
             Visualization.visualizeMapProblem(mapProblem, width + 1, height + 1);
-
+            mapProblem.solveProblem();
+            Visualization.visualizeSolvedMapProblem(mapProblem, width + 1, height + 1);
             mapProblem.getMapGraph().displayGraph();
 
             read = scanner.nextInt();

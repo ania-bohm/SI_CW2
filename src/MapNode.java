@@ -45,5 +45,4 @@ public class MapNode extends Node {
         }
 
     }
-
 }

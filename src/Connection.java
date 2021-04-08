@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Connection {
     private Point startPoint;
     private Point endPoint;

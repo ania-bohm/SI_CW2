@@ -40,7 +40,8 @@ public class Point implements Comparable<Point> {
         }
         return -1;
     }
-    public static double distance(Point startPoint, Point endPoint){
+
+    public static double distance(Point startPoint, Point endPoint) {
         return Math.sqrt(Math.pow(startPoint.getX() - endPoint.getX(), 2) + Math.pow(startPoint.getY() - endPoint.getY(), 2));
     }
 }

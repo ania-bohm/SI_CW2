@@ -18,6 +18,7 @@ class LineComponent extends JComponent {
         this.mapGraph = mapGraph;
     }
 
+
     public void addLine(int x1, int x2, int y1, int y2) {
         Line2D.Double line = new Line2D.Double(x1, y1, x2, y2);
         lines.add(line);
@@ -48,9 +49,6 @@ class LineComponent extends JComponent {
             }
         }
         g2d.setStroke(new BasicStroke(3));
-        //float alpha = 0.5f;
-        //Color color = new Color(1, 1, 1, alpha);
-        //g2d.setPaint(color);
         Color gray = new Color(219, 209, 209);
         g2d.setPaint(gray);
         for (Line2D.Double line : lines) {
@@ -87,8 +85,6 @@ class LineComponent extends JComponent {
             g2d.fillOval(
                     (int) (point.getX() * 40) - 6 + 25,
                     (int) (point.getY() * 40) - 6 + 25,
-//                    (int) (point.getX() * 50),
-//                    (int) (point.getY() * 50),
                     (int) point.getWidth(),
                     (int) point.getHeight());
         }

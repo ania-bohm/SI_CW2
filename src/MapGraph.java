@@ -25,7 +25,6 @@ public class MapGraph extends Graph {
         }
     }
 
-
     public List<MapNode> getNodeList() {
         return nodeList;
     }
@@ -44,11 +43,9 @@ public class MapGraph extends Graph {
         for (int i = 0; i < indexes.length; i++) {
             indexes[i] = i;
         }
-
         final List<Integer> indexesListCopy = Arrays.asList(indexes);
         ArrayList<Integer> sortedList = new ArrayList(indexesListCopy);
         Collections.sort(sortedList, (left, right) -> (int) (distanceRow[indexesListCopy.indexOf(left)] - distanceRow[indexesListCopy.indexOf(right)]));
-
         return sortedList.get(n + 1);
     }
 

@@ -62,7 +62,6 @@ public class MapProblem extends CSP {
             }
             pointList.add(new Point(newPoint));
         }
-
         return pointList;
     }
 
@@ -137,7 +136,7 @@ public class MapProblem extends CSP {
             MapNode currentVar = variables.get(nextVar);
             int colour = chooseNextValue(currentVar.getColourDomain());
             while (colour != -1) {
-                if (constraintsSatisfied(currentVar,currentVar.getColourDomain().get(colour))) {
+                if (constraintsSatisfied(currentVar, currentVar.getColourDomain().get(colour))) {
                     currentVar.setColour(currentVar.getColourDomain().get(colour));
                     ArrayList<MapNode> newVariables = new ArrayList(List.copyOf(variables));
                     newVariables.remove(nextVar);
@@ -192,7 +191,7 @@ public class MapProblem extends CSP {
     }
 
     public void saveSolution(MapGraph solution) {
-        System.out.println("Znaleziono rozwiązanie!!");
+        System.out.println("New solution is found");
         this.solutions.add(generateSolution(solution));
     }
 
@@ -203,11 +202,4 @@ public class MapProblem extends CSP {
         }
         return solution;
     }
-
-//    public boolean isConnectionValid(Connection c, List<Connection> allConnections) {
-//        for (Connection connection : allConnections) {
-//
-//        }
-//    }
-
 }
