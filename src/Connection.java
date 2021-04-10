@@ -47,7 +47,7 @@ public class Connection {
     }
 
     public boolean isCrossing(Connection c) {
-        double a1=0.0, a2=0.0, b1=0.0, b2=0.0, x1=0.0, y1=0.0, x2=0.0, y2=0.0, x=0.0, y=0.0;
+        double a1 = 0.0, a2 = 0.0, b1 = 0.0, b2 = 0.0, x1 = 0.0, y1 = 0.0, x2 = 0.0, y2 = 0.0, x = 0.0, y = 0.0;
         // if 'this' is vertical
         if (this.startPoint.getX() == this.endPoint.getX()) {
             // if 'connection' is horizontal
@@ -57,7 +57,7 @@ public class Connection {
                         && this.startPoint.getX() < Math.max(c.startPoint.getX(), c.endPoint.getX()))
                         && c.startPoint.getY() > Math.min(this.startPoint.getY(), this.endPoint.getY())
                         && c.startPoint.getY() < Math.max(this.startPoint.getY(), this.endPoint.getY())) {
-                     return true;
+                    return true;
                 } else { // the vertical and horizontal sections are not crossing
                     return false;
                 }
@@ -133,8 +133,7 @@ public class Connection {
                     return false;
                 }
             }
-        }
-        else{
+        } else {
             a1 = calculateA(this);
             a2 = calculateA(c);
             b1 = calculateB(this);
@@ -157,7 +156,7 @@ public class Connection {
             if (isInConnectionRange(x1, y1, this) + isInConnectionRange(x2, y2, c) > 3) {
                 return true;
             } else {
-                System.out.println("this: "+this.toString() +", c: "+c.toString()+"x1,x2,y1,y2"+x1+","+x2+","+y1+","+y2);
+                //System.out.println("this: "+this.toString() +", c: "+c.toString()+"x1,x2,y1,y2"+x1+","+x2+","+y1+","+y2);
                 return false;
             }
         }
@@ -165,31 +164,31 @@ public class Connection {
     }
 
     public double calculateA(Connection c) { // a = (y1-y2)/(x1-x2)
-        double outcome = division( (double)(c.getStartPoint().getY() - c.getEndPoint().getY()) , (double)(c.getStartPoint().getX() - c.getEndPoint().getX()));
+        double outcome = division((double) (c.getStartPoint().getY() - c.getEndPoint().getY()), (double) (c.getStartPoint().getX() - c.getEndPoint().getX()));
         return outcome;
     }
 
     public double calculateB(Connection c) { // b = (x1*y2-x2*y1)/(x1-x2)
-        double outcome = division((double)((c.getStartPoint().getX()) * (c.getEndPoint().getY()) - (c.getStartPoint().getY() ) * (c.getEndPoint().getX())) , (c.getStartPoint().getX() * 1.0 - c.getEndPoint().getX() * 1.0));
+        double outcome = division((double) ((c.getStartPoint().getX()) * (c.getEndPoint().getY()) - (c.getStartPoint().getY()) * (c.getEndPoint().getX())), (c.getStartPoint().getX() * 1.0 - c.getEndPoint().getX() * 1.0));
         return outcome;
     }
-    public double division(double a, double b){
-        return (double) a/b;
+
+    public double division(double a, double b) {
+        return (double) a / b;
     }
 
     public int isInConnectionRange(double x, double y, Connection c) {//0 - not crossing, 1 - at end, 3 - crossing
         double offset = 0.000001;
-        if(c.startPoint.getY()==c.endPoint.getY()){
-            offset =0.000001;
-        }
-        else{
+        if (c.startPoint.getY() == c.endPoint.getY()) {
+            offset = 0.000001;
+        } else {
             offset = -0.000001;
         }
 
-        boolean isInRange = (x+offset > Math.min(c.getStartPoint().getX(), c.getEndPoint().getX())
-                && x-offset < Math.max(c.getStartPoint().getX(), c.getEndPoint().getX())
-                && y+offset > Math.min(c.getStartPoint().getY(), c.getEndPoint().getY())
-                && y-offset < Math.max(c.getStartPoint().getY(), c.getEndPoint().getY()));
+        boolean isInRange = (x + offset > Math.min(c.getStartPoint().getX(), c.getEndPoint().getX())
+                && x - offset < Math.max(c.getStartPoint().getX(), c.getEndPoint().getX())
+                && y + offset > Math.min(c.getStartPoint().getY(), c.getEndPoint().getY())
+                && y - offset < Math.max(c.getStartPoint().getY(), c.getEndPoint().getY()));
         boolean isAtEnd = (x == c.getStartPoint().getX() && y == c.getStartPoint().getY()
                 || x == c.getEndPoint().getX() && y == c.getEndPoint().getY()) ||
                 (x == this.getStartPoint().getX() && y == this.getStartPoint().getY()

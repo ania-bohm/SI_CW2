@@ -4,6 +4,4 @@ public class CSP {
     public CSP() {
     }
 
-    public void initialiseGraph() {
-    }
 }
