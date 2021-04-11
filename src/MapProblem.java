@@ -158,10 +158,10 @@ public class MapProblem extends CSP {
     }
 
     public int chooseNextValue(List<Integer> domain) {
-        return ferstServedValue(domain);
+        return firstServedValue(domain);
     }
 
-    public int ferstServedValue(List<Integer> domain) {
+    public int firstServedValue(List<Integer> domain) {
         if (domain.isEmpty()) {
             return -1;
         } else {

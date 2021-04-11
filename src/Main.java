@@ -1,10 +1,41 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Main.runCode();
+        Main.runEinstein();
+        //Main.runMap();
     }
-    public static void runCode() throws Exception {
+
+    public static void runEinstein() {
+        ArrayList<EinsteinConstraint> constraints = new ArrayList<>();
+        constraints.add(new EinsteinConstraint(new int[]{1, 0, 1, 0, 0, 0}));
+        constraints.add(new EinsteinConstraint(new int[]{0, 1, 2, 0, 0, 0}));
+        constraints.add(new EinsteinConstraint(new int[]{0, 0, 3, 0, 5, 0}));
+        constraints.add(new EinsteinConstraint(new int[]{0, 4, 0, 2, 0, 0}));
+        constraints.add(new EinsteinConstraint(new int[]{0, 0, 4, 3, 0, 0}));
+        constraints.add(new EinsteinConstraint(new int[]{3, 0, 0, 0, 1, 0}));
+        constraints.add(new EinsteinConstraint(new int[]{0, 0, 0, 4, 0, 1}));
+        constraints.add(new EinsteinConstraint(new int[]{0, 0, 5, 0, 0, 2}));
+        constraints.add(new EinsteinConstraint(new int[]{0, 0, 0, 5, 3, 0}));
+        constraints.add(new EinsteinConstraint(new int[]{0, 2, 0, 0, 4, 0}));
+
+        ArrayList<EinsteinPositionConstraint> positionConstraints = new ArrayList<>();
+        positionConstraints.add(new EinsteinPositionConstraint(1, 2, 1, 1, 3));
+        positionConstraints.add(new EinsteinPositionConstraint(3, 1, 0, 5, 5));
+        positionConstraints.add(new EinsteinPositionConstraint(3, 1, 0, 4, 2));
+        positionConstraints.add(new EinsteinPositionConstraint(2, 1, 0, 1, 5));
+        positionConstraints.add(new EinsteinPositionConstraint(5, 3, 0, 1, 4));
+
+        EinsteinProblem einsteinProblem = new EinsteinProblem(5);
+        einsteinProblem.initialiseGraph();
+        einsteinProblem.setConstraints(constraints);
+        einsteinProblem.setPositionConstraints(positionConstraints);
+        einsteinProblem.solveProblem();
+        einsteinProblem.displaySolutions();
+    }
+
+    public static void runMap() throws Exception {
         //width, height - size of the graph
         int width = 10;
         int height = 10;

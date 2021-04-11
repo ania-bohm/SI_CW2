@@ -9,24 +9,24 @@ public class EinsteinNode extends Node {
 
     public EinsteinNode(int houseNumber) {
         domain = new ArrayList[6];
-        for (int i = 0; i < variables.length; i++) {
-            this.domain[i] = new ArrayList<>();
-        }
         leftNeighbour = null;
         rightNeighbour = null;
         variables = new int[6];
         variables[0] = houseNumber;
+        for (int i = 0; i < variables.length; i++) {
+            this.domain[i] = new ArrayList<>();
+        }
     }
 
     public EinsteinNode(EinsteinNode oldNode) {
         this.domain = new ArrayList[6];
-        for (int i = 0; i < variables.length; i++) {
-            this.domain[i] = new ArrayList<>(List.copyOf(oldNode.domain[i]));
-        }
         this.houseCount = oldNode.houseCount;
         this.leftNeighbour = oldNode.leftNeighbour;
         this.rightNeighbour = oldNode.rightNeighbour;
         this.variables = new int[6];
+        for (int i = 0; i < variables.length; i++) {
+            this.domain[i] = new ArrayList<>(List.copyOf(oldNode.domain[i]));
+        }
         for (int i = 0; i < variables.length; i++) {
             this.variables = oldNode.variables;
         }
@@ -74,7 +74,7 @@ public class EinsteinNode extends Node {
 
     public void generateDomain(int domainToGenerate, int houseCount) {
         for (int j = 0; j < houseCount; j++) {
-            domain[domainToGenerate].add(j);
+            domain[domainToGenerate].add(j+1);
         }
     }
 
