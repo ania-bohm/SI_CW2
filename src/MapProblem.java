@@ -158,10 +158,10 @@ public class MapProblem extends CSP {
     }
 
     public int chooseNextValue(List<Integer> domain) {
-        return firstBestValue(domain);
+        return ferstServedValue(domain);
     }
 
-    public int firstBestValue(List<Integer> domain) {
+    public int ferstServedValue(List<Integer> domain) {
         if (domain.isEmpty()) {
             return -1;
         } else {
@@ -179,10 +179,10 @@ public class MapProblem extends CSP {
     }
 
     public int chooseNextVar(ArrayList<MapNode> nodesLeft) {
-        return firstBestVar(nodesLeft);
+        return firstServedValue(nodesLeft);
     }
 
-    public int firstBestVar(ArrayList<MapNode> nodesLeft) {
+    public int firstServedValue(ArrayList<MapNode> nodesLeft) {
         if (nodesLeft.isEmpty()) {
             return -1;
         } else {
