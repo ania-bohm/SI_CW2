@@ -17,11 +17,7 @@ public class EinsteinGraph {
     }
 
     public void addNode() {
-        EinsteinNode newNode = new EinsteinNode(nodeList.size());
+        EinsteinNode newNode = new EinsteinNode(nodeList.size()+1);
         nodeList.add(newNode);
-        if (nodeList.size() >= 2) {
-            nodeList.get(nodeList.size() - 2).setRightNeighbour(newNode);
-            newNode.setLeftNeighbour(nodeList.get(nodeList.size() - 2));
-        }
     }
 }

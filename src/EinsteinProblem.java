@@ -74,46 +74,48 @@ public class EinsteinProblem extends CSP {
     }
 
     public void solveProblem() {
-        ArrayList<EinsteinNode> houses = new ArrayList<>(List.copyOf(einsteinGraph.getNodeList()));
-        backtracking(houses);
+
+        ArrayList<HouseVariable> variables = makeVariableList(einsteinGraph);
+        backtracking(variables);
     }
 
-    public boolean backtracking(ArrayList<EinsteinNode> houses) {
-        int nextHouse = chooseNextHouse(houses);
-        if (nextHouse != -1) {
-            EinsteinNode currentHouse = houses.get(nextHouse);
-            int nextVar = chooseNextVar(currentHouse.getVariables());
-            if (nextVar != -1) {
-                int currentVar = nextVar;
-                int valueIndex = chooseNextValue(currentHouse.getDomain()[currentVar]);
-                while (valueIndex != -1) {
-                    int value = currentHouse.getDomain()[currentVar].get(valueIndex);
-                    if (constraintsSatisfied(currentHouse, currentVar, value)) {
-                        currentHouse.setValue(currentVar, value);
-                        ArrayList<EinsteinNode> newHouses = new ArrayList(List.copyOf(houses));
+    public boolean backtracking(ArrayList<HouseVariable> variableList) {
+        int nextVarIndex = chooseNextVar(variableList);
+        while (nextVarIndex != -1) {
+            HouseVariable currentVar = variableList.get(nextVarIndex);
+            int valueIndex = chooseNextValue(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()]);
+            while (valueIndex != -1) {
+                int value = einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()].get(valueIndex);
+                if (constraintsSatisfied(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()), currentVar.getVarIndex(), value)) {
+                    einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).setValue(currentVar.getVarIndex(), value);
+                    ArrayList<HouseVariable> newVariableList = new ArrayList(List.copyOf(variableList));
+                    newVariableList.remove(currentVar);
+                    if (backtracking(newVariableList)) {
 
-                        if (noMoreVariables(currentHouse)) {
-                            newHouses.remove(currentHouse);
-                        }
-
-                        if (backtracking(newHouses)) {
-
-                        } else {
-                            if (positionConstraintsSatisfied()) {
-                                saveSolution(einsteinGraph);
-                            }
+                    } else {
+                        if (positionConstraintsSatisfied()) {
+                            saveSolution(einsteinGraph);
                         }
                     }
-                    currentHouse.getDomain()[currentVar].remove(valueIndex);
-                    currentHouse.getVariables()[currentVar] = 0;
-                    valueIndex = chooseNextValue(currentHouse.getDomain()[currentVar]);
                 }
-                return true;
+                einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()].remove(valueIndex);
+                einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getVariables()[currentVar.getVarIndex()] = 0;
+                valueIndex = chooseNextValue(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()]);
             }
-            currentHouse.generateDomains(houseCount);
-            return false;
+            einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).generateDomain(currentVar.getVarIndex(), 5);
+            return true;
         }
         return false;
+    }
+
+    public ArrayList<HouseVariable> makeVariableList(EinsteinGraph graph) {
+        ArrayList<HouseVariable> variables = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            for (int j = 1; j < 6; j++) {
+                variables.add(new HouseVariable(i, j));
+            }
+        }
+        return variables;
     }
 
     private boolean positionConstraintsSatisfied() {
@@ -127,24 +129,22 @@ public class EinsteinProblem extends CSP {
                             if (currentNode.getVariables()[0] == 1) {
                                 return false;
                             } else {
-                                if (currentNode.getLeftNeighbour().getVariables()[constraint.getVar2()] != constraint.getValue2()) {
+                                if (currentNode.getLeftNeighbour(einsteinGraph).getVariables()[constraint.getVar2()] != constraint.getValue2()) {
                                     return false;
                                 }
                             }
                             break;
                         case 0: // one of the neighbours
                             if (currentNode.getVariables()[0] == 1) {
-                                if (currentNode.getRightNeighbour().getVariables()[constraint.getVar2()] != constraint.getValue2()) {
+                                if (currentNode.getRightNeighbour(einsteinGraph).getVariables()[constraint.getVar2()] != constraint.getValue2()) {
                                     return false;
                                 }
-                            }
-                            if (currentNode.getVariables()[0] == 5) {
-                                if (currentNode.getLeftNeighbour().getVariables()[constraint.getVar2()] != constraint.getValue2()) {
+                            } else if (currentNode.getVariables()[0] == 5) {
+                                if (currentNode.getLeftNeighbour(einsteinGraph).getVariables()[constraint.getVar2()] != constraint.getValue2()) {
                                     return false;
                                 }
-                            }
-                            if ((currentNode.getLeftNeighbour().getVariables()[constraint.getVar2()] != constraint.getValue2())
-                                    && currentNode.getRightNeighbour().getVariables()[constraint.getVar2()] != constraint.getValue2()) {
+                            } else if ((currentNode.getLeftNeighbour(einsteinGraph).getVariables()[constraint.getVar2()] != constraint.getValue2())
+                                    && currentNode.getRightNeighbour(einsteinGraph).getVariables()[constraint.getVar2()] != constraint.getValue2()) {
                                 return false;
                             }
                             break;
@@ -152,7 +152,7 @@ public class EinsteinProblem extends CSP {
                             if (currentNode.getVariables()[0] == 5) {
                                 return false;
                             } else {
-                                if (currentNode.getRightNeighbour().getVariables()[constraint.getVar2()] != constraint.getValue2()) {
+                                if (currentNode.getRightNeighbour(einsteinGraph).getVariables()[constraint.getVar2()] != constraint.getValue2()) {
                                     return false;
                                 }
                             }
@@ -164,38 +164,16 @@ public class EinsteinProblem extends CSP {
         return true;
     }
 
-    private boolean noMoreVariables(EinsteinNode node) {
-        for (int i = 0; i < node.getVariables().length; i++) {
-            if (node.getVariables()[i] == 0) {
-                return false;
-            }
-        }
-        return true;
+    private int chooseNextVar(ArrayList<HouseVariable> var) {
+        return firstServedVar(var);
     }
 
-    private int chooseNextHouse(ArrayList<EinsteinNode> houses) {
-        return firstServedHouse(houses);
-    }
-
-    private int firstServedHouse(ArrayList<EinsteinNode> houses) {
-        if (houses.isEmpty()) {
+    private int firstServedVar(ArrayList<HouseVariable> var) {
+        if (var.isEmpty()) {
             return -1;
         } else {
             return 0;
         }
-    }
-
-    private int chooseNextVar(int[] variables) {
-        return firstServedVar(variables);
-    }
-
-    private int firstServedVar(int[] variables) {
-        for (int i = 0; i < variables.length; i++) {
-            if (variables[i] == 0) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     private int chooseNextValue(ArrayList<Integer> domain) {
@@ -213,6 +191,7 @@ public class EinsteinProblem extends CSP {
     private void saveSolution(EinsteinGraph currentState) {
         int[][] solution = generateSolution(currentState);
         solutions.add(solution);
+
     }
 
     private int[][] generateSolution(EinsteinGraph einsteinGraph) {
@@ -240,7 +219,7 @@ public class EinsteinProblem extends CSP {
         currentNode.setValue(currentVar, value);
         for (int i = 0; i < constraints.size(); i++) {
             if (!isConstraintSatisfied(currentNode, constraints.get(i))) {
-                currentNode.setValue(currentVar,0);
+                currentNode.setValue(currentVar, 0);
                 return false;
             }
         }
@@ -284,6 +263,7 @@ public class EinsteinProblem extends CSP {
                 System.out.println("Tobacco     : " + words[3]);
                 System.out.println("Drink       : " + words[4]);
                 System.out.println("Pet         : " + words[5]);
+                System.out.println("");
             }
             System.out.println("-----------------------------------");
         }

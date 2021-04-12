@@ -2,15 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EinsteinNode extends Node {
-    private EinsteinNode leftNeighbour, rightNeighbour;
     private int houseCount;
     private int[] variables;
     private ArrayList<Integer>[] domain;
 
     public EinsteinNode(int houseNumber) {
         domain = new ArrayList[6];
-        leftNeighbour = null;
-        rightNeighbour = null;
         variables = new int[6];
         variables[0] = houseNumber;
         for (int i = 0; i < variables.length; i++) {
@@ -21,8 +18,6 @@ public class EinsteinNode extends Node {
     public EinsteinNode(EinsteinNode oldNode) {
         this.domain = new ArrayList[6];
         this.houseCount = oldNode.houseCount;
-        this.leftNeighbour = oldNode.leftNeighbour;
-        this.rightNeighbour = oldNode.rightNeighbour;
         this.variables = new int[6];
         for (int i = 0; i < variables.length; i++) {
             this.domain[i] = new ArrayList<>(List.copyOf(oldNode.domain[i]));
@@ -32,20 +27,20 @@ public class EinsteinNode extends Node {
         }
     }
 
-    public EinsteinNode getLeftNeighbour() {
-        return leftNeighbour;
+    public EinsteinNode getLeftNeighbour(EinsteinGraph graph) {
+        if (this.variables[0] <= 1) {
+            return null;
+        } else {
+            return graph.getNodeList().get(this.variables[0] - 2);
+        }
     }
 
-    public void setLeftNeighbour(EinsteinNode leftNeighbour) {
-        this.leftNeighbour = leftNeighbour;
-    }
-
-    public EinsteinNode getRightNeighbour() {
-        return rightNeighbour;
-    }
-
-    public void setRightNeighbour(EinsteinNode rightNeighbour) {
-        this.rightNeighbour = rightNeighbour;
+    public EinsteinNode getRightNeighbour(EinsteinGraph graph) {
+        if (this.variables[0] >= 5) {
+            return null;
+        } else {
+            return graph.getNodeList().get(this.variables[0]);
+        }
     }
 
     public int getHouseCount() {
@@ -73,13 +68,14 @@ public class EinsteinNode extends Node {
     }
 
     public void generateDomain(int domainToGenerate, int houseCount) {
+        domain[domainToGenerate].clear();
         for (int j = 0; j < houseCount; j++) {
-            domain[domainToGenerate].add(j+1);
+            domain[domainToGenerate].add(j + 1);
         }
     }
 
     public void generateDomains(int houseCount) {
-        for (int i = 0; i < 6; i++) {
+        for (int i = 1; i < 6; i++) {
             generateDomain(i, houseCount);
         }
     }
