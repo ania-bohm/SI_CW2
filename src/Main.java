@@ -46,7 +46,9 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         // pressing any int except 0 will repeat the whole process (generating new graph and solving it)
         while (read != 0) {
-            MapProblem mapProblem = new MapProblem(4);
+            // options: 1. heuristicVariable: 0 - firstServedVar, 1 - randomVar, 2. heuristicValue: 0 - firstServedValue, 1 - randomValue
+            // 3. solveType: 0 - backtracking, 1 - forwardChecking, 2 - backtracking with AC3
+            MapProblem mapProblem = new MapProblem(4, new Options(0, 0, 1));
 
             //number of colours 3 or 4
             //MapProblem mapProblem = new MapProblem(4);

@@ -7,15 +7,13 @@ public class MapProblem extends CSP {
     private int numberOfColours;
     private int width, height;
     private ArrayList<ArrayList<Integer>> solutions;
+    private Options options;
 
-    public ArrayList<ArrayList<Integer>> getSolutions() {
-        return solutions;
-    }
-
-    public MapProblem(int numberOfColours) {
+    public MapProblem(int numberOfColours, Options options) {
         this.mapGraph = new MapGraph();
         this.numberOfColours = numberOfColours;
         solutions = new ArrayList<>();
+        this.options = options;
     }
 
     public MapGraph getMapGraph() {
@@ -32,6 +30,38 @@ public class MapProblem extends CSP {
 
     public void setNumberOfColours(int numberOfColours) {
         this.numberOfColours = numberOfColours;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public ArrayList<ArrayList<Integer>> getSolutions() {
+        return solutions;
+    }
+
+    public void setSolutions(ArrayList<ArrayList<Integer>> solutions) {
+        this.solutions = solutions;
+    }
+
+    public Options getOptions() {
+        return options;
+    }
+
+    public void setOptions(Options options) {
+        this.options = options;
     }
 
     public void initialiseGraph(int width, int height, int n) throws Exception {
@@ -93,7 +123,6 @@ public class MapProblem extends CSP {
             boolean stopCondition = true;
             int whileIterator = 0;
             while (stopCondition) {
-
                 int nodeToConnectToIndex = mapGraph.findNthDistanceIndex(nodeToConnectIndex, whileIterator);
                 MapNode nodeToConnectTo = mapGraph.getNodeList().get(nodeToConnectToIndex);
                 if (nodeToConnect.neighbourList.contains(nodeToConnectTo)) {
@@ -127,11 +156,17 @@ public class MapProblem extends CSP {
 
     public void solveProblem() {
         ArrayList<MapNode> variables = new ArrayList<MapNode>(List.copyOf(mapGraph.getNodeList()));
-        //backtracking(variables);
-
-        backtrackingWithAC3(variables);
-
-//        forwardChecking(variables);
+        switch (options.getSolveType()) {
+            case 0:
+                backtracking(variables);
+                break;
+            case 1:
+                forwardChecking(variables);
+                break;
+            case 2:
+                backtrackingWithAC3(variables);
+                break;
+        }
     }
 
     public boolean backtracking(ArrayList<MapNode> variables) {
@@ -160,25 +195,8 @@ public class MapProblem extends CSP {
         return false;
     }
 
-    private int iterationTest = 0;
-
     public boolean backtrackingWithAC3(ArrayList<MapNode> variables) {
-        iterationTest++;
-        //System.out.println("Iteration: " + iterationTest);
-        int when = 100;
-        if (iterationTest == when) {
-            System.out.println("Domains before AC3: ");
-            for (int i = 0; i < variables.size(); i++) {
-                System.out.println(variables.get(i).toString());
-            }
-        }
         ac3(variables);
-        if (iterationTest == when) {
-            System.out.println("Domains after AC3: ");
-            for (int i = 0; i < variables.size(); i++) {
-                System.out.println(variables.get(i).toString());
-            }
-        }
         int nextVar = chooseNextVar(variables);
         if (nextVar != -1) {
             MapNode currentVar = variables.get(nextVar);
@@ -197,7 +215,6 @@ public class MapProblem extends CSP {
                     } else {
                         saveSolution(mapGraph);
                     }
-
                 }
                 regenerateNeighbourDomains(domainsBackup);
                 currentVar.getColourDomain().remove(colour);
@@ -209,7 +226,6 @@ public class MapProblem extends CSP {
         }
         return false;
     }
-
 
     public boolean forwardChecking(ArrayList<MapNode> variables) {
         int nextVar = chooseNextVar(variables);
@@ -273,7 +289,6 @@ public class MapProblem extends CSP {
             left.setColourDomain(newLeftDomain);
             agenda.remove(0);
         }
-
     }
 
     public ArrayList<MapArc> generateArcsList(ArrayList<MapNode> variables) {
@@ -324,7 +339,14 @@ public class MapProblem extends CSP {
     }
 
     public int chooseNextValue(List<Integer> domain) {
-        return firstServedValue(domain);
+        switch (options.getHeuristicValue()) {
+            case 0:
+                return firstServedValue(domain);
+            case 1:
+                return randomValue(domain);
+            default:
+                return -1;
+        }
     }
 
     public int firstServedValue(List<Integer> domain) {
@@ -335,6 +357,41 @@ public class MapProblem extends CSP {
         }
     }
 
+    public int randomValue(List<Integer> domain) {
+        Random random = new Random();
+        if (!domain.isEmpty()) {
+            return random.nextInt(domain.size());
+        }
+        return -1;
+    }
+
+    public int chooseNextVar(ArrayList<MapNode> nodesLeft) {
+        switch (options.getHeuristicValue()) {
+            case 0:
+                return firstServedVar(nodesLeft);
+            case 1:
+                return randomVar(nodesLeft);
+            default:
+                return -1;
+        }
+    }
+
+    public int firstServedVar(ArrayList<MapNode> nodesLeft) {
+        if (nodesLeft.isEmpty()) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
+    public int randomVar(ArrayList<MapNode> nodesLeft) {
+        Random random = new Random();
+        if (!nodesLeft.isEmpty()) {
+            return random.nextInt(nodesLeft.size());
+        }
+        return -1;
+    }
+
     public boolean constraintsSatisfied(MapNode currentNode, int colour) {
         for (Node neighbour : currentNode.getNeighbourList()) {
             if (((MapNode) neighbour).getColour() == colour) {
@@ -342,18 +399,6 @@ public class MapProblem extends CSP {
             }
         }
         return true;
-    }
-
-    public int chooseNextVar(ArrayList<MapNode> nodesLeft) {
-        return firstServedValue(nodesLeft);
-    }
-
-    public int firstServedValue(ArrayList<MapNode> nodesLeft) {
-        if (nodesLeft.isEmpty()) {
-            return -1;
-        } else {
-            return 0;
-        }
     }
 
     public void saveSolution(MapGraph solution) {
