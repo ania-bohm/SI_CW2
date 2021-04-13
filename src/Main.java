@@ -28,7 +28,7 @@ public class Main {
         positionConstraints.add(new EinsteinPositionConstraint(2, 1, 0, 1, 5));
         positionConstraints.add(new EinsteinPositionConstraint(5, 3, 0, 1, 4));
 
-        EinsteinProblem einsteinProblem = new EinsteinProblem(5);
+        EinsteinProblem einsteinProblem = new EinsteinProblem(5, new Options(0, 0, 1));
         einsteinProblem.initialiseGraph();
         einsteinProblem.setConstraints(constraints);
         einsteinProblem.setPositionConstraints(positionConstraints);

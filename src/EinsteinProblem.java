@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class EinsteinProblem extends CSP {
     private int houseCount;
@@ -7,13 +8,15 @@ public class EinsteinProblem extends CSP {
     private List<EinsteinConstraint> constraints;
     private List<EinsteinPositionConstraint> positionConstraints;
     private List<int[][]> solutions;
+    private Options options;
 
-    public EinsteinProblem(int houseCount) {
+    public EinsteinProblem(int houseCount, Options options) {
         this.houseCount = houseCount;
         positionConstraints = new ArrayList<>();
         constraints = new ArrayList<>();
         einsteinGraph = new EinsteinGraph();
         solutions = new ArrayList<>();
+        this.options = options;
     }
 
     public int getHouseCount() {
@@ -56,6 +59,14 @@ public class EinsteinProblem extends CSP {
         this.solutions = solutions;
     }
 
+    public Options getOptions() {
+        return options;
+    }
+
+    public void setOptions(Options options) {
+        this.options = options;
+    }
+
     public void addConstraints(EinsteinConstraint constraint) {
         constraints.add(constraint);
     }
@@ -74,10 +85,19 @@ public class EinsteinProblem extends CSP {
     }
 
     public void solveProblem() {
-
         ArrayList<HouseVariable> variables = makeVariableList(einsteinGraph);
-//        backtracking(variables);
-        forwardChecking(variables);
+        switch (options.getSolveType()) {
+            case 0:
+                backtracking(variables);
+                break;
+            case 1:
+                forwardChecking(variables);
+                break;
+//            case 2:
+//                backtrackingWithAC3(variables);
+//                break;
+//
+        }
     }
 
     public boolean backtracking(ArrayList<HouseVariable> variableList) {
@@ -117,9 +137,9 @@ public class EinsteinProblem extends CSP {
             while (valueIndex != -1) {
                 Integer value = einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()].get(valueIndex);
 
-                ArrayList<Integer> [][] domainsBackup = new ArrayList[5][6];
-                for(int i=0;i<5;i++){
-                    for(int j=0;j<6;j++){
+                ArrayList<Integer>[][] domainsBackup = new ArrayList[5][6];
+                for (int i = 0; i < 5; i++) {
+                    for (int j = 0; j < 6; j++) {
                         domainsBackup[i][j] = new ArrayList(List.copyOf(einsteinGraph.getNodeList().get(i).getDomain()[j]));
                     }
                 }
@@ -157,7 +177,7 @@ public class EinsteinProblem extends CSP {
         }
         for (int i = 0; i < 5; i++) {
             if (einsteinGraph.getNodeList().get(i).getDomain()[currentVar.getVarIndex()].isEmpty()
-            && einsteinGraph.getNodeList().get(currentVar.getHouseIndex()) != einsteinGraph.getNodeList().get(i)) {
+                    && einsteinGraph.getNodeList().get(currentVar.getHouseIndex()) != einsteinGraph.getNodeList().get(i)) {
                 return false;
             }
         }
@@ -165,10 +185,10 @@ public class EinsteinProblem extends CSP {
         return true;
     }
 
-    public void regenerateNeighbourDomains(ArrayList<Integer> [][] domainsBackup) {
+    public void regenerateNeighbourDomains(ArrayList<Integer>[][] domainsBackup) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 6; j++) {
-                 einsteinGraph.getNodeList().get(i).getDomain()[j]=domainsBackup[i][j];
+                einsteinGraph.getNodeList().get(i).getDomain()[j] = domainsBackup[i][j];
             }
         }
     }
@@ -230,7 +250,14 @@ public class EinsteinProblem extends CSP {
     }
 
     private int chooseNextVar(ArrayList<HouseVariable> var) {
-        return firstServedVar(var);
+        switch(options.getHeuristicVariable()){
+            case 0:
+                return firstServedVar(var);
+            case 1:
+                return randomVar(var);
+            default:
+                return -1;
+        }
     }
 
     private int firstServedVar(ArrayList<HouseVariable> var) {
@@ -241,8 +268,24 @@ public class EinsteinProblem extends CSP {
         }
     }
 
+    private int randomVar(ArrayList<HouseVariable> var) {
+        Random random = new Random();
+        if (var.isEmpty()) {
+            return -1;
+        } else {
+            return random.nextInt(var.size());
+        }
+    }
+
     private int chooseNextValue(ArrayList<Integer> domain) {
-        return firstServedValue(domain);
+        switch (options.getHeuristicValue()) {
+            case 0:
+                return firstServedValue(domain);
+            case 1:
+                return randomValue(domain);
+            default:
+                return -1;
+        }
     }
 
     private int firstServedValue(ArrayList<Integer> domain) {
@@ -250,6 +293,15 @@ public class EinsteinProblem extends CSP {
             return -1;
         } else {
             return 0;
+        }
+    }
+
+    private int randomValue(ArrayList<Integer> domain) {
+        Random random = new Random();
+        if (domain.isEmpty()) {
+            return -1;
+        } else {
+            return random.nextInt(domain.size());
         }
     }
 
