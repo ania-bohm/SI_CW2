@@ -76,7 +76,8 @@ public class EinsteinProblem extends CSP {
     public void solveProblem() {
 
         ArrayList<HouseVariable> variables = makeVariableList(einsteinGraph);
-        backtracking(variables);
+//        backtracking(variables);
+        forwardChecking(variables);
     }
 
     public boolean backtracking(ArrayList<HouseVariable> variableList) {
@@ -97,7 +98,9 @@ public class EinsteinProblem extends CSP {
                             saveSolution(einsteinGraph);
                         }
                     }
+
                 }
+
                 einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()].remove(valueIndex);
                 einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getVariables()[currentVar.getVarIndex()] = 0;
                 valueIndex = chooseNextValue(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()]);
@@ -106,6 +109,68 @@ public class EinsteinProblem extends CSP {
             return true;
         }
         return false;
+    }
+
+    public boolean forwardChecking(ArrayList<HouseVariable> variableList) {
+        int nextVarIndex = chooseNextVar(variableList);
+        while (nextVarIndex != -1) {
+            HouseVariable currentVar = variableList.get(nextVarIndex);
+            int valueIndex = chooseNextValue(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()]);
+            while (valueIndex != -1) {
+                Integer value = einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()].get(valueIndex);
+                ArrayList<Integer> [][] domainsBackup = new ArrayList[5][6];
+                for(int i=0;i<5;i++){
+                    for(int j=0;j<6;j++){
+                        domainsBackup[i][j] = new ArrayList(List.copyOf(einsteinGraph.getNodeList().get(i).getDomain()[j]));
+                    }
+                }
+                if (filterNeighbourDomains(currentVar, value)) {
+                    if (constraintsSatisfied(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()), currentVar.getVarIndex(), value)) {
+                        einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).setValue(currentVar.getVarIndex(), value);
+                        ArrayList<HouseVariable> newVariableList = new ArrayList(List.copyOf(variableList));
+                        newVariableList.remove(currentVar);
+                        if (forwardChecking(newVariableList)) {
+
+                        } else {
+                            if (positionConstraintsSatisfied()) {
+                                saveSolution(einsteinGraph);
+                            }
+                        }
+                    }
+                }
+                regenerateNeighbourDomains(domainsBackup);
+                einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()].remove(value);
+                einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getVariables()[currentVar.getVarIndex()] = 0;
+                valueIndex = chooseNextValue(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()]);
+            }
+            einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).generateDomain(currentVar.getVarIndex(), 5);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean filterNeighbourDomains(HouseVariable currentVar, Integer currentVal) {
+        for (int i = 0; i < 5; i++) {
+            if (einsteinGraph.getNodeList().get(currentVar.getHouseIndex()) != einsteinGraph.getNodeList().get(i)) {
+                einsteinGraph.getNodeList().get(i).getDomain()[currentVar.getVarIndex()].remove(currentVal);
+            }
+        }
+        for (int i = 0; i < 5; i++) {
+            if (einsteinGraph.getNodeList().get(i).getDomain()[currentVar.getVarIndex()].isEmpty()
+            && einsteinGraph.getNodeList().get(currentVar.getHouseIndex()) != einsteinGraph.getNodeList().get(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void regenerateNeighbourDomains(ArrayList<Integer> [][] domainsBackup) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 6; j++) {
+                 einsteinGraph.getNodeList().get(i).getDomain()[j]=domainsBackup[i][j];
+            }
+        }
     }
 
     public ArrayList<HouseVariable> makeVariableList(EinsteinGraph graph) {
