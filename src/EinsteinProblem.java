@@ -98,9 +98,7 @@ public class EinsteinProblem extends CSP {
                             saveSolution(einsteinGraph);
                         }
                     }
-
                 }
-
                 einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()].remove(valueIndex);
                 einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getVariables()[currentVar.getVarIndex()] = 0;
                 valueIndex = chooseNextValue(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()]);
@@ -118,12 +116,14 @@ public class EinsteinProblem extends CSP {
             int valueIndex = chooseNextValue(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()]);
             while (valueIndex != -1) {
                 Integer value = einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()].get(valueIndex);
+
                 ArrayList<Integer> [][] domainsBackup = new ArrayList[5][6];
                 for(int i=0;i<5;i++){
                     for(int j=0;j<6;j++){
                         domainsBackup[i][j] = new ArrayList(List.copyOf(einsteinGraph.getNodeList().get(i).getDomain()[j]));
                     }
                 }
+
                 if (filterNeighbourDomains(currentVar, value)) {
                     if (constraintsSatisfied(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()), currentVar.getVarIndex(), value)) {
                         einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).setValue(currentVar.getVarIndex(), value);
@@ -256,7 +256,6 @@ public class EinsteinProblem extends CSP {
     private void saveSolution(EinsteinGraph currentState) {
         int[][] solution = generateSolution(currentState);
         solutions.add(solution);
-
     }
 
     private int[][] generateSolution(EinsteinGraph einsteinGraph) {

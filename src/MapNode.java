@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,5 +45,15 @@ public class MapNode extends Node {
             this.colourDomain.add(i);
         }
 
+    }
+
+    @Override
+    public String toString() {
+        String domain = "Domain: {";
+        for (int i = 0; i < colourDomain.size() - 1; i++) {
+            domain += colourDomain.get(i) + ", ";
+        }
+        domain += colourDomain.get(colourDomain.size() - 1) + "}";
+        return domain;
     }
 }
