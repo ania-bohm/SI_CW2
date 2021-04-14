@@ -168,8 +168,11 @@ public class MapProblem extends CSP {
                 break;
         }
     }
+    private int iterationsTest = 0;
 
     public boolean backtracking(ArrayList<MapNode> variables) {
+        iterationsTest++;
+        System.out.println("Iteration backtracking:" + iterationsTest);
         int nextVar = chooseNextVar(variables);
         if (nextVar != -1) {
             MapNode currentVar = variables.get(nextVar);
@@ -196,6 +199,8 @@ public class MapProblem extends CSP {
     }
 
     public boolean backtrackingWithAC3(ArrayList<MapNode> variables) {
+        iterationsTest++;
+        System.out.println("Iteration backtrackingWithAC3: " + iterationsTest);
         ac3(variables);
         int nextVar = chooseNextVar(variables);
         if (nextVar != -1) {
@@ -228,6 +233,8 @@ public class MapProblem extends CSP {
     }
 
     public boolean forwardChecking(ArrayList<MapNode> variables) {
+        iterationsTest++;
+        System.out.println("Iteration forwardChecking: " + iterationsTest);
         int nextVar = chooseNextVar(variables);
         if (nextVar != -1) {
             MapNode currentVar = variables.get(nextVar);
@@ -251,7 +258,7 @@ public class MapProblem extends CSP {
                 }
                 currentVar.getColourDomain().remove(colour);
                 currentVar.setColour(-1);
-                regenerateNeighbourDomains(domainsBackup);
+                regenerateNeighbourDomainsForward(currentVar, colour);
                 colour = chooseNextValue(currentVar.getColourDomain());
             }
             currentVar.generateDomain(this.numberOfColours);
@@ -337,6 +344,13 @@ public class MapProblem extends CSP {
             mapGraph.getNodeList().get(i).setColourDomain(domainsBackup.get(i));
         }
     }
+    public void regenerateNeighbourDomainsForward(MapNode currentVar, Integer colour) {
+        for (int i = 0; i < currentVar.getNeighbourList().size(); i++) {
+            if (!((MapNode) currentVar.getNeighbourList().get(i)).getColourDomain().contains(colour)) {
+                ((MapNode) currentVar.getNeighbourList().get(i)).getColourDomain().add(colour);
+            }
+        }
+    }
 
     public int chooseNextValue(List<Integer> domain) {
         switch (options.getHeuristicValue()) {
@@ -371,6 +385,8 @@ public class MapProblem extends CSP {
                 return firstServedVar(nodesLeft);
             case 1:
                 return randomVar(nodesLeft);
+            case 2:
+                return smallestDomain(nodesLeft);
             default:
                 return -1;
         }
@@ -390,6 +406,11 @@ public class MapProblem extends CSP {
             return random.nextInt(nodesLeft.size());
         }
         return -1;
+    }
+
+    public int smallestDomain(ArrayList<MapNode> nodesLeft) {
+        //TO DO
+        return 1;
     }
 
     public boolean constraintsSatisfied(MapNode currentNode, int colour) {

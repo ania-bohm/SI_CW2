@@ -17,4 +17,14 @@ public class EinsteinConstraint {
             this.constraintSet[i] = constraintSet[i];
         }
     }
+
+    @Override
+    public String toString() {
+        String display = "[|";
+        for (int i = 0; i < 6; i++) {
+            display += this.constraintSet[i]+"|";
+        }
+        display+="]";
+        return display;
+    }
 }

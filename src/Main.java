@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-//        Main.runEinstein();
-        Main.runMap();
+        Main.runEinstein();
+//        Main.runMap();
     }
 
     public static void runEinstein() {
@@ -28,7 +28,9 @@ public class Main {
         positionConstraints.add(new EinsteinPositionConstraint(2, 1, 0, 1, 5));
         positionConstraints.add(new EinsteinPositionConstraint(5, 3, 0, 1, 4));
 
-        EinsteinProblem einsteinProblem = new EinsteinProblem(5, new Options(0, 0, 1));
+        // options: 1. heuristicVariable: 0 - firstServedVar, 1 - randomVar, 2 - smallestDomainVar, 2. heuristicValue: 0 - firstServedValue, 1 - randomValue
+        // 3. solveType: 0 - backtracking, 1 - forwardChecking, 2 - backtracking with AC3
+        EinsteinProblem einsteinProblem = new EinsteinProblem(5, new Options(0, 0, 2));
         einsteinProblem.initialiseGraph();
         einsteinProblem.setConstraints(constraints);
         einsteinProblem.setPositionConstraints(positionConstraints);
@@ -42,11 +44,11 @@ public class Main {
         int height = 10;
         int read = 1;
         //number of points that will become nodes in graph
-        int numberOfNodes = 10;
+        int numberOfNodes = 4;
         Scanner scanner = new Scanner(System.in);
         // pressing any int except 0 will repeat the whole process (generating new graph and solving it)
         while (read != 0) {
-            // options: 1. heuristicVariable: 0 - firstServedVar, 1 - randomVar, 2. heuristicValue: 0 - firstServedValue, 1 - randomValue
+            // options: 1. heuristicVariable: 0 - firstServedVar, 1 - randomVar, 2 - smallestDomainVar, 2. heuristicValue: 0 - firstServedValue, 1 - randomValue
             // 3. solveType: 0 - backtracking, 1 - forwardChecking, 2 - backtracking with AC3
             MapProblem mapProblem = new MapProblem(4, new Options(0, 0, 1));
 
@@ -55,12 +57,12 @@ public class Main {
 
             //generating graph
             mapProblem.initialiseGraph(width, height, numberOfNodes);
-
             //visualizing empty graph
             Visualization.visualizeMapProblem(mapProblem, width + 1, height + 1);
 
             //solving problem with backtracking
             mapProblem.solveProblem();
+
 
             //visualizing solutions
             Visualization.visualizeFirstSolvedMapProblem(mapProblem, width + 1, height + 1);

@@ -5,7 +5,7 @@ import java.util.Random;
 public class EinsteinProblem extends CSP {
     private int houseCount;
     private EinsteinGraph einsteinGraph;
-    private List<EinsteinConstraint> constraints;
+    private ArrayList<EinsteinConstraint> constraints;
     private List<EinsteinPositionConstraint> positionConstraints;
     private List<int[][]> solutions;
     private Options options;
@@ -39,7 +39,7 @@ public class EinsteinProblem extends CSP {
         return constraints;
     }
 
-    public void setConstraints(List<EinsteinConstraint> constraints) {
+    public void setConstraints(ArrayList<EinsteinConstraint> constraints) {
         this.constraints = constraints;
     }
 
@@ -93,10 +93,10 @@ public class EinsteinProblem extends CSP {
             case 1:
                 forwardChecking(variables);
                 break;
-//            case 2:
-//                backtrackingWithAC3(variables);
-//                break;
-//
+            case 2:
+                backtrackingWithAC3(variables);
+                break;
+
         }
     }
 
@@ -169,6 +169,122 @@ public class EinsteinProblem extends CSP {
         return false;
     }
 
+    public boolean backtrackingWithAC3(ArrayList<HouseVariable> variableList) {
+        ac3();
+        int nextVarIndex = chooseNextVar(variableList);
+        while (nextVarIndex != -1) {
+            HouseVariable currentVar = variableList.get(nextVarIndex);
+            int valueIndex = chooseNextValue(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()]);
+
+            while (valueIndex != -1) {
+                ArrayList<ArrayList<Integer>[]> backupDomains = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    ArrayList<Integer>[] backupDomain = new ArrayList[6];
+                    for (int j = 0; j < 6; j++) {
+                        backupDomain[j] = new ArrayList<>(List.copyOf(einsteinGraph.getNodeList().get(i).getDomain()[j]));
+                        //System.out.println(backupDomain[j].toString());
+                    }
+                    backupDomains.add(backupDomain);
+                }
+
+                int value = einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()].get(valueIndex);
+                if (constraintsSatisfied(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()), currentVar.getVarIndex(), value)) {
+                    einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).setValue(currentVar.getVarIndex(), value);
+                    ArrayList<HouseVariable> newVariableList = new ArrayList(List.copyOf(variableList));
+                    newVariableList.remove(currentVar);
+                    if (backtrackingWithAC3(newVariableList)) {
+
+                    } else {
+                        if (positionConstraintsSatisfied()) {
+                            saveSolution(einsteinGraph);
+                        }
+                    }
+                }
+                regenerateDomains(backupDomains);
+                einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()].remove(valueIndex);
+                einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getVariables()[currentVar.getVarIndex()] = 0;
+
+                valueIndex = chooseNextValue(einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).getDomain()[currentVar.getVarIndex()]);
+            }
+            einsteinGraph.getNodeList().get(currentVar.getHouseIndex()).generateDomain(currentVar.getVarIndex(), 5);
+            return true;
+        }
+        return false;
+    }
+
+    public void regenerateDomains(ArrayList<ArrayList<Integer>[]> backupDomains) {
+        for (int i = 0; i < 5; i++) {
+            einsteinGraph.getNodeList().get(i).setDomain(backupDomains.get(i));
+        }
+    }
+
+    public void ac3() {
+        for (int i = 0; i < einsteinGraph.getNodeList().size(); i++) {
+            ArrayList<EinsteinArc> arcs = generateArcsList(constraints);
+            ArrayList<EinsteinArc> agenda = initialiseAgenda(arcs);
+            while (agenda.size() > 0) {
+                boolean domainChanged = false;
+                int leftVar = agenda.get(0).getVar1();
+                Integer leftVal = agenda.get(0).getVal1();
+                int rightVar = agenda.get(0).getVar2();
+                Integer rightVal = agenda.get(0).getVal2();
+
+                if (einsteinGraph.getNodeList().get(i).getDomain()[leftVar].contains(leftVal)) {
+                    if (!einsteinGraph.getNodeList().get(i).getDomain()[rightVar].contains(rightVal)) {
+                        einsteinGraph.getNodeList().get(i).getDomain()[leftVar].remove(leftVal);
+                        domainChanged = true;
+                    }
+                }
+
+                if (domainChanged) {
+                    for (int j = 0; j < arcs.size(); j++) {
+                        if ((leftVar == arcs.get(j).getVar2()) && (leftVal == arcs.get(j).getVal2())) {
+                            if (!arcs.get(j).existsInList(agenda)) {
+                                agenda.add(arcs.get(j));
+                            }
+                        }
+                    }
+                }
+                agenda.remove(0);
+            }
+        }
+    }
+
+    public ArrayList<EinsteinArc> generateArcsList(ArrayList<EinsteinConstraint> constraints) {
+        ArrayList<EinsteinArc> arcs = new ArrayList<>();
+        for (EinsteinConstraint constraint : constraints) {
+            int var1 = -1, val1 = -1, var2 = -1, val2 = -1;
+            for (int i = 0; i < 6; i++) {
+                if (constraint.getConstraintSet()[i] != 0) {
+                    if (var1 == -1) {
+                        var1 = i;
+                        val1 = constraint.getConstraintSet()[i];
+                    } else {
+                        var2 = i;
+                        val2 = constraint.getConstraintSet()[i];
+                    }
+                }
+            }
+            EinsteinArc newArc1 = new EinsteinArc(var1, val1, var2, val2);
+            EinsteinArc newArc2 = new EinsteinArc(var2, val2, var1, val1);
+            if (!newArc1.existsInList(arcs)) {
+                arcs.add(newArc1);
+            }
+            if (!newArc2.existsInList(arcs)) {
+                arcs.add(newArc2);
+            }
+        }
+        return arcs;
+    }
+
+    public ArrayList<EinsteinArc> initialiseAgenda(ArrayList<EinsteinArc> arcs) {
+        ArrayList<EinsteinArc> agenda = new ArrayList<>();
+        for (int i = 0; i < arcs.size(); i++) {
+            agenda.add(arcs.get(i));
+        }
+        return agenda;
+    }
+
     public boolean filterNeighbourDomains(HouseVariable currentVar, Integer currentVal) {
         for (int i = 0; i < 5; i++) {
             if (einsteinGraph.getNodeList().get(currentVar.getHouseIndex()) != einsteinGraph.getNodeList().get(i)) {
@@ -181,7 +297,6 @@ public class EinsteinProblem extends CSP {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -250,7 +365,7 @@ public class EinsteinProblem extends CSP {
     }
 
     private int chooseNextVar(ArrayList<HouseVariable> var) {
-        switch(options.getHeuristicVariable()){
+        switch (options.getHeuristicVariable()) {
             case 0:
                 return firstServedVar(var);
             case 1:
