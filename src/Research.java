@@ -1,24 +1,24 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Timer;
 
 public class Research {
 
     public void runTests() throws Exception {
         heuristicMapTest();
-        algorithmsMapTest();
+        algorithmsMapTestColour3();
+        algorithmsMapTestColour4();
         heuristicEinsteinTest();
     }
 
     public void heuristicMapTest() throws Exception {
-        Options options = new Options(0, 0, 0, false, new FileWriter(new File("")));
+        Options options = new Options(0, 0, 0, false, new PrintWriter(new File("test")));
         int width = 10;
         int height = 10;
-        int numberOfNodes = 6;
+        int numberOfNodes = 8;
         MapProblem mapProblem = new MapProblem(3, options);
         mapProblem.initialiseGraph(width, height, numberOfNodes);
 
@@ -26,14 +26,17 @@ public class Research {
         for (int varOption = 0; varOption < 3; varOption++) {
             for (int algorithmOption = 0; algorithmOption < 4; algorithmOption++) {
                 mapProblem.clearProblem();
-                options = new Options(varOption, 0, algorithmOption, true, new FileWriter(new File(buildFilePath(varOption, 0, algorithmOption, "BadanieHeurystykiZmiennejMapy_Kolor-3"))));
+                File file = new File(buildFilePath(varOption, 0, algorithmOption, "BadanieHeurystykiZmiennejMapy_Kolor-3"));
+                file.createNewFile();
+                PrintWriter writer = new PrintWriter(file);
+                options = new Options(varOption, 0, algorithmOption, true, writer);
                 mapProblem.setOptions(options);
-                int startTime, endTime;
-                startTime= Instant.now().getNano();
+                long startTime, endTime;
+                startTime = System.currentTimeMillis();
                 mapProblem.solveProblem();
-                endTime = Instant.now().getNano();
-                options.getWriter().write(mapProblem.iteratorTest);
-                options.getWriter().write((endTime-startTime)/10000000);
+                endTime = System.currentTimeMillis();
+                options.getWriter().println(mapProblem.iteratorTest + ";" + (endTime - startTime));
+                writer.close();
             }
         }
 
@@ -41,14 +44,17 @@ public class Research {
         for (int valOption = 0; valOption < 2; valOption++) {
             for (int algorithmOption = 0; algorithmOption < 4; algorithmOption++) {
                 mapProblem.clearProblem();
-                options = new Options(0, valOption, algorithmOption, true, new FileWriter(new File(buildFilePath(0, valOption, algorithmOption, "BadanieHeurystykiWartosciMapy_Kolor-3"))));
+                File file = new File(buildFilePath(0, valOption, algorithmOption, "BadanieHeurystykiWartosciMapy_Kolor-3"));
+                file.createNewFile();
+                PrintWriter writer = new PrintWriter(file);
+                options = new Options(0, valOption, algorithmOption, true, writer);
                 mapProblem.setOptions(options);
-                int startTime, endTime;
-                startTime= Instant.now().getNano();
+                long startTime, endTime;
+                startTime = System.currentTimeMillis();
                 mapProblem.solveProblem();
-                endTime = Instant.now().getNano();
-                options.getWriter().write(mapProblem.iteratorTest);
-                options.getWriter().write((endTime-startTime)/10000000);
+                endTime = System.currentTimeMillis();
+                options.getWriter().println(mapProblem.iteratorTest + ";" + (endTime - startTime));
+                writer.close();
             }
         }
 
@@ -57,14 +63,17 @@ public class Research {
         for (int varOption = 0; varOption < 3; varOption++) {
             for (int algorithmOption = 0; algorithmOption < 4; algorithmOption++) {
                 mapProblem.clearProblem();
-                options = new Options(varOption, 0, algorithmOption, true, new FileWriter(new File(buildFilePath(varOption, 0, algorithmOption, "BadanieHeurystykiZmiennejMapy_Kolor-4"))));
+                File file = new File(buildFilePath(varOption, 0, algorithmOption, "BadanieHeurystykiZmiennejMapy_Kolor-4"));
+                file.createNewFile();
+                PrintWriter writer = new PrintWriter(file);
+                options = new Options(varOption, 0, algorithmOption, true, writer);
                 mapProblem.setOptions(options);
-                int startTime, endTime;
-                startTime= Instant.now().getNano();
+                long startTime, endTime;
+                startTime = System.currentTimeMillis();
                 mapProblem.solveProblem();
-                endTime = Instant.now().getNano();
-                options.getWriter().write(mapProblem.iteratorTest);
-                options.getWriter().write((endTime-startTime)/10000000);
+                endTime = System.currentTimeMillis();
+                options.getWriter().println(mapProblem.iteratorTest + ";" + (endTime - startTime));
+                writer.close();
             }
         }
 
@@ -72,32 +81,37 @@ public class Research {
         for (int valOption = 0; valOption < 2; valOption++) {
             for (int algorithmOption = 0; algorithmOption < 4; algorithmOption++) {
                 mapProblem.clearProblem();
-                options = new Options(0, valOption, algorithmOption, true, new FileWriter(new File(buildFilePath(0, valOption, algorithmOption, "BadanieHeurystykiWartosciMapy_Kolor-4"))));
+                File file = new File(buildFilePath(0, valOption, algorithmOption, "BadanieHeurystykiWartosciMapy_Kolor-4"));
+                file.createNewFile();
+                PrintWriter writer = new PrintWriter(file);
+                options = new Options(0, valOption, algorithmOption, true, writer);
                 mapProblem.setOptions(options);
-                int startTime, endTime;
-                startTime= Instant.now().getNano();
+                long startTime, endTime;
+                startTime = System.currentTimeMillis();
                 mapProblem.solveProblem();
-                endTime = Instant.now().getNano();
-                options.getWriter().write(mapProblem.iteratorTest);
-                options.getWriter().write((endTime-startTime)/10000000);
+                endTime = System.currentTimeMillis();
+                options.getWriter().println(mapProblem.iteratorTest + ";" + (endTime - startTime));
+                writer.close();
             }
         }
-
     }
 
-    public void algorithmsMapTest() throws Exception {
+    public void algorithmsMapTestColour3() throws Exception {
         File file1, file2, file3, file4;
-        file1 = new File(buildFilePath(0, 0, 0, "AlgorithmMapTest"));
-        file2 = new File(buildFilePath(0, 0, 1, "AlgorithmMapTest"));
-        file3 = new File(buildFilePath(0, 0, 2, "AlgorithmMapTest"));
-        file4 = new File(buildFilePath(0, 0, 3, "AlgorithmMapTest"));
-
-        FileWriter writer1, writer2, writer3, writer4;
-        writer1 = new FileWriter(file1);
-        writer2 = new FileWriter(file2);
-        writer3 = new FileWriter(file3);
-        writer4 = new FileWriter(file4);
-        FileWriter writers[] = new FileWriter[]{writer1, writer2, writer3, writer4};
+        file1 = new File(buildFilePath(0, 0, 0, "AlgorithmMapTestColour3"));
+        file2 = new File(buildFilePath(0, 0, 1, "AlgorithmMapTestColour3"));
+        file3 = new File(buildFilePath(0, 0, 2, "AlgorithmMapTestColour3"));
+        file4 = new File(buildFilePath(0, 0, 3, "AlgorithmMapTestColour3"));
+        file1.createNewFile();
+        file2.createNewFile();
+        file3.createNewFile();
+        file4.createNewFile();
+        PrintWriter writer1, writer2, writer3, writer4;
+        writer1 = new PrintWriter(file1);
+        writer2 = new PrintWriter(file2);
+        writer3 = new PrintWriter(file3);
+        writer4 = new PrintWriter(file4);
+        PrintWriter writers[] = new PrintWriter[]{writer1, writer2, writer3, writer4};
         int nodes[] = new int[]{2, 3, 4, 6, 8, 9, 10, 12, 13, 14};
         int width = 10;
         int height = 10;
@@ -110,19 +124,64 @@ public class Research {
                 mapProblem.clearProblem();
                 options = new Options(0, 0, algorithmOption, false, writers[algorithmOption]);
                 mapProblem.setOptions(options);
-                int startTime, endTime;
-                startTime= Instant.now().getNano();
+                long startTime, endTime;
+                startTime = System.currentTimeMillis();
                 mapProblem.solveProblem();
-                endTime = Instant.now().getNano();
-                options.getWriter().write(mapProblem.iteratorTest);
-                options.getWriter().write((endTime-startTime)/10000000);
+                endTime = System.currentTimeMillis();
+                options.getWriter().println(mapProblem.iteratorTest + ";" + (endTime - startTime));
             }
         }
+        writer1.close();
+        writer2.close();
+        writer3.close();
+        writer4.close();
+
+    }
+
+    public void algorithmsMapTestColour4() throws Exception {
+        File file1, file2, file3, file4;
+        file1 = new File(buildFilePath(0, 0, 0, "AlgorithmMapTestColour4"));
+        file2 = new File(buildFilePath(0, 0, 1, "AlgorithmMapTestColour4"));
+        file3 = new File(buildFilePath(0, 0, 2, "AlgorithmMapTestColour4"));
+        file4 = new File(buildFilePath(0, 0, 3, "AlgorithmMapTestColour4"));
+        file1.createNewFile();
+        file2.createNewFile();
+        file3.createNewFile();
+        file4.createNewFile();
+        PrintWriter writer1, writer2, writer3, writer4;
+        writer1 = new PrintWriter(file1);
+        writer2 = new PrintWriter(file2);
+        writer3 = new PrintWriter(file3);
+        writer4 = new PrintWriter(file4);
+        PrintWriter writers[] = new PrintWriter[]{writer1, writer2, writer3, writer4};
+        int nodes[] = new int[]{2, 3, 4, 6, 8, 9, 10, 12, 13, 14};
+        int width = 10;
+        int height = 10;
+        for (int nodeCountIndex = 0; nodeCountIndex < nodes.length; nodeCountIndex++) {
+            Options options = new Options(0, 0, 0, false, writers[0]);
+            MapProblem mapProblem = new MapProblem(4, options);
+            int numberOfNodes = nodes[nodeCountIndex];
+            mapProblem.initialiseGraph(width, height, numberOfNodes);
+            for (int algorithmOption = 0; algorithmOption < 4; algorithmOption++) {
+                mapProblem.clearProblem();
+                options = new Options(0, 0, algorithmOption, false, writers[algorithmOption]);
+                mapProblem.setOptions(options);
+                long startTime, endTime;
+                startTime = System.currentTimeMillis();
+                mapProblem.solveProblem();
+                endTime = System.currentTimeMillis();
+                options.getWriter().println(mapProblem.iteratorTest + ";" + (endTime - startTime));
+            }
+        }
+        writer1.close();
+        writer2.close();
+        writer3.close();
+        writer4.close();
 
     }
 
     public void heuristicEinsteinTest() throws IOException {
-        Options options = new Options(0, 0, 0, false, new FileWriter(new File("")));
+        Options options ;
         ArrayList<EinsteinConstraint> constraints = new ArrayList<>();
         constraints.add(new EinsteinConstraint(new int[]{1, 0, 1, 0, 0, 0}));
         constraints.add(new EinsteinConstraint(new int[]{0, 1, 2, 0, 0, 0}));
@@ -144,40 +203,45 @@ public class Research {
 
 
         //badanie heurystyki zmiennej
-        for (int varOption = 0; varOption < 3; varOption++) {
+        for (int varOption = 0; varOption < 2; varOption++) {
             for (int algorithmOption = 0; algorithmOption < 4; algorithmOption++) {
-                options = new Options(varOption, 0, algorithmOption, true, new FileWriter(new File(buildFilePath(varOption, 0, algorithmOption, "BadanieHeurystykiZmiennejEinsteina"))));
+                File file = new File(buildFilePath(varOption, 0, algorithmOption, "BadanieHeurystykiZmiennejEinsteina"));
+                file.createNewFile();
+                PrintWriter writer = new PrintWriter(file);
+                options = new Options(varOption, 0, algorithmOption, true, writer);
 
                 EinsteinProblem einsteinProblem = new EinsteinProblem(5, options);
                 einsteinProblem.initialiseGraph();
                 einsteinProblem.setConstraints(constraints);
                 einsteinProblem.setPositionConstraints(positionConstraints);
-                int startTime, endTime;
-                startTime= Instant.now().getNano();
+                long startTime, endTime;
+                startTime = System.currentTimeMillis();
                 einsteinProblem.solveProblem();
-                endTime = Instant.now().getNano();
-                options.getWriter().write(einsteinProblem.iteratorTest);
-                options.getWriter().write((endTime-startTime)/10000000);
+                endTime = System.currentTimeMillis();
+                options.getWriter().println(einsteinProblem.iteratorTest + ";" + (endTime - startTime));
+                writer.close();
             }
         }
 
         //badanie heurystyki wartości
         for (int valOption = 0; valOption < 2; valOption++) {
             for (int algorithmOption = 0; algorithmOption < 4; algorithmOption++) {
-                options = new Options(0, valOption, algorithmOption, true, new FileWriter(new File(buildFilePath(0, valOption, algorithmOption, "BadanieHeurystykiWartosciEinsteina"))));
+                File file = new File(buildFilePath(0, valOption, algorithmOption, "BadanieHeurystykiWartosciEinsteina"));
+                file.createNewFile();
+                PrintWriter writer = new PrintWriter(file);
+                options = new Options(0, valOption, algorithmOption, true, writer);
                 EinsteinProblem einsteinProblem = new EinsteinProblem(5, options);
                 einsteinProblem.initialiseGraph();
                 einsteinProblem.setConstraints(constraints);
                 einsteinProblem.setPositionConstraints(positionConstraints);
-                int startTime, endTime;
-                startTime= Instant.now().getNano();
+                long startTime, endTime;
+                startTime = System.currentTimeMillis();
                 einsteinProblem.solveProblem();
-                endTime = Instant.now().getNano();
-                options.getWriter().write(einsteinProblem.iteratorTest);
-                options.getWriter().write((endTime-startTime)/10000000);
+                endTime = System.currentTimeMillis();
+                options.getWriter().println(einsteinProblem.iteratorTest + ";" + (endTime - startTime));
+                writer.close();
             }
         }
-
     }
 
 

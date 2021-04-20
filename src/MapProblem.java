@@ -161,6 +161,7 @@ public class MapProblem extends CSP {
             mapGraph.getNodeList().get(i).generateDomain(numberOfColours);
         }
         solutions.clear();
+        iteratorTest = 0;
     }
 
     public void solveProblem() {
@@ -183,7 +184,7 @@ public class MapProblem extends CSP {
 
     public  int iteratorTest = 0;
 
-    public boolean backtracking(ArrayList<MapNode> variables) throws IOException {
+    public boolean backtracking(ArrayList<MapNode> variables) {
         int nextVar = chooseNextVar(variables);
         if (nextVar != -1) {
             MapNode currentVar = variables.get(nextVar);
@@ -194,7 +195,7 @@ public class MapProblem extends CSP {
                     ArrayList<MapNode> newVariables = new ArrayList(List.copyOf(variables));
                     newVariables.remove(nextVar);
                     if (backtracking(newVariables)) {
-                        if (options.isOneSolution()) {
+                        if (options.isOneSolution() && solutions.size()>0) {
                             return true;
                         }
                     } else {
@@ -231,7 +232,7 @@ public class MapProblem extends CSP {
                         ArrayList<MapNode> newVariables = new ArrayList(List.copyOf(variables));
                         newVariables.remove(nextVar);
                         if (forwardChecking(newVariables)) {
-                            if (options.isOneSolution()) {
+                            if (options.isOneSolution() && solutions.size()>0){
                                 return true;
                             }
                         } else {
@@ -272,7 +273,7 @@ public class MapProblem extends CSP {
                         ArrayList<MapNode> newVariables = new ArrayList(List.copyOf(variables));
                         newVariables.remove(nextVar);
                         if (forwardChecking(newVariables)) {
-                            if (options.isOneSolution()) {
+                            if (options.isOneSolution() && solutions.size()>0) {
                                 return true;
                             }
                         } else {
@@ -311,7 +312,7 @@ public class MapProblem extends CSP {
                     ArrayList<MapNode> newVariables = new ArrayList(List.copyOf(variables));
                     newVariables.remove(nextVar);
                     if (backtrackingWithAC3(newVariables)) {
-                        if (options.isOneSolution()) {
+                        if (options.isOneSolution() && solutions.size()>0) {
                             return true;
                         }
                     } else {
@@ -440,7 +441,7 @@ public class MapProblem extends CSP {
     }
 
     public int chooseNextVar(ArrayList<MapNode> nodesLeft) {
-        switch (options.getHeuristicValue()) {
+        switch (options.getHeuristicVariable()) {
             case 0:
                 return firstServedVar(nodesLeft);
             case 1:
@@ -502,7 +503,7 @@ public class MapProblem extends CSP {
         for (MapNode node : graph.getNodeList()) {
             solution.add(node.getColour());
         }
-        System.out.println("Iterations: " + iteratorTest);
+        //System.out.println("Iterations: " + iteratorTest);
         return solution;
     }
 }

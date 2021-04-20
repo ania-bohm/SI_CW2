@@ -1,4 +1,5 @@
 import java.io.FileWriter;
+import java.io.PrintWriter;
 
 public class Options {
     // heuristicVariable: 0 - firstServedVar, 1 - randomVar
@@ -12,16 +13,16 @@ public class Options {
 
 
 
-    private FileWriter writer;
+    private PrintWriter writer;
 
-    public Options(int heuristicVariable, int heuristicValue, int solveType, boolean oneSolution, FileWriter writer){
+    public Options(int heuristicVariable, int heuristicValue, int solveType, boolean oneSolution, PrintWriter writer){
         this.heuristicVariable = heuristicVariable;
         this.heuristicValue = heuristicValue;
         this.solveType = solveType;
         this.oneSolution = oneSolution;
         this.writer = writer;
     }
-    public FileWriter getWriter() {
+    public PrintWriter getWriter() {
         return writer;
     }
     public int getHeuristicVariable() {

@@ -4,17 +4,19 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Options options = new Options(0, 0, 0, false);
+        Research research = new Research();
+        research.runTests();
+ //       Options options = new Options(0, 0, 0, true,null);
 
         // options: 1. heuristicVariable: 0 - firstServedVar, 1 - randomVar, 2 - smallestDomainVar, 2. heuristicValue: 0 - firstServedValue, 1 - randomValue
         // 3. solveType: 0 - backtracking, 1 - forwardChecking, 2 - backtracking with AC3, 3 - forwardChecking with AC3
         // Run solving Map colouring problem
-        Main.runMap(options);
+//        Main.runMap(options);
 
-        // options: 1. heuristicVariable: 0 - firstServedVar, 1 - randomVar, 2 - smallestDomainVar, 2. heuristicValue: 0 - firstServedValue, 1 - randomValue
+        // options: 1. heuristicVariable: 0 - firstServedVar, 1 - randomVar, 2. heuristicValue: 0 - firstServedValue, 1 - randomValue
         // 3. solveType: 0 - backtracking, 1 - forwardChecking, 2 - backtracking with AC3, 3 - forwardChecking with AC3
         // Run solving Einstein riddle
-//         Main.runEinstein(options);
+        // Main.runEinstein(options);
     }
 
     public static void runMap(Options options) throws Exception {
