@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class EinsteinArc {
+public class EinsteinArc extends Arc{
     private int var1, val1, var2, val2;
 
     public EinsteinArc(int var1, int val1, int var2, int val2){

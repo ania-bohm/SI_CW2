@@ -75,6 +75,7 @@ public class EinsteinNode extends Node {
     }
 
     public void generateDomains(int houseCount) {
+        domain[0].clear();
         domain[0].add(variables[0]);
         for (int i = 1; i < 6; i++) {
             generateDomain(i, houseCount);

@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+
 public class Options {
     // heuristicVariable: 0 - firstServedVar, 1 - randomVar
     private int heuristicVariable;
@@ -6,12 +8,22 @@ public class Options {
     // solving algorithm: 0 - backtracking, 1 - forwardChecking, 2 - backtracking with AC3
     private int solveType;
 
-    public Options(int heuristicVariable, int heuristicValue, int solveType){
+    private boolean oneSolution;
+
+
+
+    private FileWriter writer;
+
+    public Options(int heuristicVariable, int heuristicValue, int solveType, boolean oneSolution, FileWriter writer){
         this.heuristicVariable = heuristicVariable;
         this.heuristicValue = heuristicValue;
         this.solveType = solveType;
+        this.oneSolution = oneSolution;
+        this.writer = writer;
     }
-
+    public FileWriter getWriter() {
+        return writer;
+    }
     public int getHeuristicVariable() {
         return heuristicVariable;
     }
@@ -30,6 +42,10 @@ public class Options {
 
     public int getSolveType() {
         return solveType;
+    }
+
+    public boolean isOneSolution() {
+        return oneSolution;
     }
 
     public void setSolveType(int solveType) {

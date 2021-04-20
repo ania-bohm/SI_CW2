@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class MapArc {
+public class MapArc extends Arc {
     private MapNode mapNode1, mapNode2;
 
     public MapArc(MapNode mapNode1, MapNode mapNode2) {
